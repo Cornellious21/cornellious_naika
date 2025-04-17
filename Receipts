@@ -1,1 +1,99 @@
+#include <stdio.h>
+#include <string.h>
+#include <time.h>
+#include <ctype.h>
 
+#define MAX_ITEMS 50
+#define MAX_NAME_LENGTH 50
+
+typedef struct {
+    char name[MAX_NAME_LENGTH];
+    float price;
+    int quantity;
+} Item;
+
+void printReceipt(Item items[], int count, float taxRate);
+void getCurrentDate(char *dateStr);
+
+int main() {
+    Item items[MAX_ITEMS];
+    int itemCount = 0;
+    char anotherItem;
+    float taxRate = 8.5; // 8.5% tax rate (adjust as needed)
+    
+    printf("Supermarket Billing System\n");
+    printf("-------------------------\n\n");
+    
+    do {
+        if (itemCount >= MAX_ITEMS) {
+            printf("Maximum number of items reached!\n");
+            break;
+        }
+        
+        printf("Enter item %d name: ", itemCount + 1);
+        fgets(items[itemCount].name, MAX_NAME_LENGTH, stdin);
+        items[itemCount].name[strcspn(items[itemCount].name, "\n")] = '\0'; // Remove newline
+        
+        printf("Enter price for %s: UgShs", items[itemCount].name);
+        scanf("%f", &items[itemCount].price);
+        
+        printf("Enter quantity: ");
+        scanf("%d", &items[itemCount].quantity);
+        
+        itemCount++;
+        
+        printf("Add another item? (y/n): ");
+        scanf(" %c", &anotherItem);
+        getchar(); // Clear the input buffer
+    } while (tolower(anotherItem) == 'y');
+    
+    printf("\nGenerating receipt...\n\n");
+    printReceipt(items, itemCount, taxRate);
+    
+    return 0;
+}
+
+void printReceipt(Item items[], int count, float taxRate) {
+    char dateStr[50];
+    getCurrentDate(dateStr);
+    
+    float subtotal = 0;
+    float tax, total;
+    
+    printf("\n");
+    printf("       CORNELLIOUS SUPERMARKET EXPRESS\n");
+    printf("        123 Main Street, Cityville\n");
+    printf("           Tel: (555) 123-4567\n");
+    printf("----------------------------------------\n");
+    printf("Date: %s\n", dateStr);
+    printf("----------------------------------------\n");
+    printf("ITEM                QTY   PRICE   AMOUNT\n");
+    printf("----------------------------------------\n");
+    
+    for (int i = 0; i < count; i++) {
+        float amount = items[i].price * items[i].quantity;
+        subtotal += amount;
+        printf("%-18s %3d  UgShs%6.2f  UgShs%7.2f\n", 
+               items[i].name, items[i].quantity, items[i].price, amount);
+    }
+    
+    tax = subtotal * (taxRate / 100);
+    total = subtotal + tax;
+    
+    printf("----------------------------------------\n");
+    printf("SUBTOTAL:                     UgShs%7.2f\n", subtotal);
+    printf("TAX (%.1f%%):                   UgShs%7.2f\n", taxRate, tax);
+    printf("TOTAL:                        UgShs%7.2f\n", total);
+    printf("----------------------------------------\n");
+    printf("          THANK YOU FOR SHOPPING!\n");
+    printf("         HAVE A WONDERFUL DAY!\n");
+    printf("----------------------------------------\n");
+}
+
+void getCurrentDate(char *dateStr) {
+    time_t t = time(NULL);
+    struct tm tm = *localtime(&t);
+    sprintf(dateStr, "%02d/%02d/%04d %02d:%02d:%02d", 
+            tm.tm_mon + 1, tm.tm_mday, tm.tm_year + 1900,
+            tm.tm_hour, tm.tm_min, tm.tm_sec);
+            }
