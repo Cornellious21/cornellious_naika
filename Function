@@ -1,1 +1,10 @@
 
+#include <stdio.h>
+void multiplyNum(int num1,int num2){
+int answer = num1*num2;
+printf("The answer of %d and %d is %d",num1,num2,answer);
+}
+int main(){
+multiplyNum(5,7);
+return 0;
+}
