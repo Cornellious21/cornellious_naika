@@ -1,0 +1,12 @@
+#include <stdio.h>
+int main(){
+    int number,product,count =1;
+    printf("Enter the number to be prompted:");
+    scanf("%d",&number);
+    while(count <=100){
+        product =number*count;
+        printf("%d * %d = %d\n",number,count,product);
+        count =count +1;
+    }
+    return 0;
+}
